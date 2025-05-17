@@ -1,3 +1,4 @@
+import { genderType } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 export type ControllerType<T = any> = (
@@ -12,10 +13,16 @@ export type ResponseType = {
   data?: any;
 };
 
-export interface SaveDetailsRequestBody {
+export interface NewUserRequestBody {
   email: string;
   name: string;
+  photo: string;
+  gender: string;
+  _id: string;
+  dob: Date;
 }
+
+
 
 // model User {
 //   id            String    @id @default(uuid())
