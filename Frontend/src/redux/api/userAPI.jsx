@@ -1,33 +1,32 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import axios from "axios";
 export const userAPI = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${import.meta.env.VITE_SERVER}/user/`,
   }),
-  tagTypes: ["userApi"],
   endpoints: (builder) => ({
-    deleteUser: builder.mutation({
-      query: ({ userId, token }) => ({
-        url: `${userId}`,
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    signIn: builder.mutation({
+      query: (data) => ({
+        url: "new",
+        method: "POST",
+        body: data,
       }),
-      invalidatesTags: ["userApi"],
-    }),
-    getUsers: builder.query({
-      query: ({ token }) => ({
-        url: "all-users",
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-      providesTags: ["userApi"],
+      invalidatesTags: ["users"],
     }),
   }),
 });
 
-export const { useGetUsersQuery, useDeleteUserMutation } = userAPI;
+export const getUser = async (id) => {
+  try {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_SERVER}/user/${id}`
+    );
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const { useSignInMutation } = userAPI;

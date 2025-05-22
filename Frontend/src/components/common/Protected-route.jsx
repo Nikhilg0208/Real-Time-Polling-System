@@ -1,14 +1,17 @@
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
-  const { token, role, isAuthenticated } = useSelector((state) => state.auth);
-  if (token !== null && isAuthenticated && role === "Admin") {
-    return children;
-  } else {
-    console.log("Not authorized");
-    return <Navigate to="/" />;
-  }
-}
+const ProtectedRoute = ({
+  isAuthenticated,
+  children,
+  adminOnly,
+  admin,
+  redirect = "/",
+}) => {
+  if (!isAuthenticated) return <Navigate to={redirect} />;
+
+  if (adminOnly && !admin) return <Navigate to={redirect} />;
+
+  return children ? children : <Outlet />;
+};
 
 export default ProtectedRoute;

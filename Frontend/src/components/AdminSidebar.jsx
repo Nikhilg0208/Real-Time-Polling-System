@@ -9,7 +9,7 @@ import { TbCategoryFilled } from "react-icons/tb";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { useDispatch } from "react-redux";
-import { logout } from "../redux/reducer/authReducer";
+import { logout } from "../redux/reducer/userReducer";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 const AdminSidebar = () => {

@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
-import { auth } from "../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { useSignInMutation } from "../redux/api/authAPI";
-import { setAuth } from "../redux/reducer/authReducer";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+import { useDispatch } from "react-redux";
+import { auth } from "../firebase";
+import { getUser, useSignInMutation } from "../redux/api/userAPI";
+import { userExist, userNotExist } from "../redux/reducer/userReducer";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
   const [signin] = useSignInMutation();
@@ -19,8 +17,25 @@ const Login = () => {
     try {
       const provider = new GoogleAuthProvider();
       const { user } = await signInWithPopup(auth, provider);
-      console.log(user);
-      // You can add additional logic here to handle user info
+      const res = await signin({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        gender,
+        dob: date,
+        _id: user.uid,
+      });
+
+      if ("data" in res) {
+        toast.success(res.data.message);
+        const data = await getUser(user.uid);
+        dispatch(userExist(data?.data));
+      } else {
+        const error = res.error;
+        const message = error.data.message;
+        toast.error(message);
+        dispatch(userNotExist());
+      }
     } catch (error) {
       console.error(error.message);
       toast.error("Google sign-in failed. Please try again.");
