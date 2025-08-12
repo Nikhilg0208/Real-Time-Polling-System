@@ -2,45 +2,55 @@ import { useState } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
-  FaDiscourse,
-  FaUser,
+  FaPlusCircle,
+  FaPollH,
+  FaVoteYea,
+  FaBookmark,
 } from "react-icons/fa";
-import { TbCategoryFilled } from "react-icons/tb";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-// import { logout } from "../redux/reducer/userReducer";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { FiLogOut } from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { toast } from "react-toastify";
 
 const AdminSidebar = () => {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState(location.pathname);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleSetActive = (path) => {
     setActiveSection(path);
   };
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
+  const logoutHandler = async () => {
+    try {
+      await signOut(auth);
+      toast.success("Signed out successfully");
+    } catch {
+      toast.error("Sign out failed");
+    }
   };
-  const handleLogout = () => {
-    // dispatch(logout());
-    toast.success("Logged Out Successfully");
-    navigate("/");
-  };
+
+  const linkClasses = (path) =>
+    `flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
+      activeSection === path
+        ? "bg-gray-700 font-bold ring-1 ring-gray-500"
+        : "bg-gray-800 hover:bg-gray-700"
+    }`;
 
   return (
     <div
       className={`min-h-full flex flex-col bg-gray-900 text-white ${
-        isCollapsed ? "min-w-12 max-w-12" : "min-w-46 max-w-46"
+        isCollapsed ? "min-w-12 max-w-12" : "min-w-52 max-w-52"
       } transition-all duration-300`}
     >
       {/* Toggle Button */}
-      <div className="flex justify-end">
-        <button onClick={toggleSidebar} className="text-white p-2">
+      <div className="flex justify-end p-2">
+        <button onClick={toggleSidebar} className="text-white">
           {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
         </button>
       </div>
@@ -48,95 +58,55 @@ const AdminSidebar = () => {
       {/* Sidebar Header */}
       <h2
         className="text-2xl font-bold text-center mb-8 border-b border-gray-700 pb-4 cursor-pointer"
-        onClick={() => navigate("/admin/dashboard")}
+        onClick={() => navigate("/dashboard")}
       >
-        {isCollapsed ? "A" : "Admin Panel"}
+        {isCollapsed ? "P" : "Polling App"}
       </h2>
 
-      {/* Sidebar Menu (Takes up Remaining Space) */}
+      {/* Menu */}
       <div className="flex flex-col space-y-2 flex-grow">
-        <Link
-          to="/admin/dashboard"
-          onClick={() => handleSetActive("/admin/dashboard")}
-        >
-          <div
-            className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-              activeSection === "/admin/dashboard"
-                ? "bg-gray-700"
-                : "bg-gray-800 hover:bg-gray-700"
-            }`}
-          >
-            <MdOutlineDashboardCustomize className="text-black text-balance" />
-            {!isCollapsed && (
-              <h3 className="text-balance font-semibold">Dashboard</h3>
-            )}
+        <Link to="/dashboard" onClick={() => handleSetActive("/dashboard")}>
+          <div className={linkClasses("/dashboard")}>
+            <MdOutlineDashboardCustomize />
+            {!isCollapsed && <span>Dashboard</span>}
           </div>
         </Link>
 
-        <Link
-          to="/admin/dashboard/users"
-          onClick={() => handleSetActive("/admin/dashboard/users")}
-        >
-          <div
-            className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-              activeSection === "/admin/dashboard/users"
-                ? "bg-gray-700"
-                : "bg-gray-800 hover:bg-gray-700"
-            }`}
-          >
-            <FaUser className="text-blue-400 text-balance" />
-            {!isCollapsed && (
-              <h3 className="text-balance font-semibold">Users</h3>
-            )}
+        <Link to="/createpoll" onClick={() => handleSetActive("/createpoll")}>
+          <div className={linkClasses("/createpoll")}>
+            <FaPlusCircle className="text-blue-400" />
+            {!isCollapsed && <span>Create Poll</span>}
           </div>
         </Link>
 
-        <Link
-          to="/admin/dashboard/categories"
-          onClick={() => handleSetActive("/admin/dashboard/categories")}
-        >
-          <div
-            className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-              activeSection === "/admin/dashboard/categories"
-                ? "bg-gray-700"
-                : "bg-gray-800 hover:bg-gray-700"
-            }`}
-          >
-            <TbCategoryFilled className="text-green-400 text-balance" />
-            {!isCollapsed && (
-              <h3 className="text-balance font-semibold">Categories</h3>
-            )}
+        <Link to="/mypools" onClick={() => handleSetActive("/mypools")}>
+          <div className={linkClasses("/mypools")}>
+            <FaPollH className="text-green-400" />
+            {!isCollapsed && <span>My Pools</span>}
           </div>
         </Link>
 
-        <Link
-          to="/admin/dashboard/courses"
-          onClick={() => handleSetActive("/admin/dashboard/courses")}
-        >
-          <div
-            className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-              activeSection === "/admin/dashboard/courses"
-                ? "bg-gray-700"
-                : "bg-gray-800 hover:bg-gray-700"
-            }`}
-          >
-            <FaDiscourse className="text-yellow-400 text-balance" />
-            {!isCollapsed && (
-              <h3 className="text-balance font-semibold">Courses</h3>
-            )}
+        <Link to="/votedpolls" onClick={() => handleSetActive("/votedpolls")}>
+          <div className={linkClasses("/votedpolls")}>
+            <FaVoteYea className="text-yellow-400" />
+            {!isCollapsed && <span>Voted Polls</span>}
           </div>
         </Link>
+
+        <Link to="/bookmarks" onClick={() => handleSetActive("/bookmarks")}>
+          <div className={linkClasses("/bookmarks")}>
+            <FaBookmark className="text-purple-400" />
+            {!isCollapsed && <span>Bookmarks</span>}
+          </div>
+        </Link>
+
+        <button onClick={logoutHandler} className="w-full text-left mt-auto">
+          <div className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 bg-gray-800 hover:bg-gray-700">
+            <FiLogOut className="text-red-400" />
+            {!isCollapsed && <span>Log Out</span>}
+          </div>
+        </button>
       </div>
-
-      {/* Logout Button (Always at the Bottom) */}
-      <button onClick={handleLogout} className="w-full text-left mt-auto">
-        <div className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 bg-gray-800 hover:bg-gray-700">
-          <FiLogOut className="text-red-400 text-balance" />
-          {!isCollapsed && (
-            <h3 className="text-balance font-semibold">Log Out</h3>
-          )}
-        </div>
-      </button>
     </div>
   );
 };

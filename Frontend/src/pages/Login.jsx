@@ -6,8 +6,10 @@ import { useDispatch } from "react-redux";
 import { auth } from "../firebase";
 import { getUser, useSignInMutation } from "../redux/api/userAPI";
 import { userExist, userNotExist } from "../redux/reducer/userReducer";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
@@ -30,6 +32,7 @@ const Login = () => {
         toast.success(res.data.message);
         const data = await getUser(user.uid);
         dispatch(userExist(data?.data));
+        navigate("/dashboard");
       } else {
         const error = res.error;
         const message = error.data.message;
