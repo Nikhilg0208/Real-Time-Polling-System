@@ -5,6 +5,10 @@ export class NewUserDto {
     @IsString()
     name?: string;
 
+    @IsOptional()
+    @IsString()
+    gender?: string;
+
     @IsEmail()
     email: string;
 

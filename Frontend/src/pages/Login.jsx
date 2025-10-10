@@ -1,49 +1,50 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
-import { useDispatch } from "react-redux";
-import { auth } from "../firebase";
-import { getUser, useSignInMutation } from "../redux/api/userAPI";
-import { userExist, userNotExist } from "../redux/reducer/userReducer";
-import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import { auth } from "../firebase";
+// import { getUser, useGoogleSignInMutation } from "../redux/api/authAPI";
+// import { userExist, userNotExist } from "../redux/reducer/userReducer";
+// import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // console.log("login")
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
   const [gender, setGender] = useState("");
   const [date, setDate] = useState("");
-  const [signin] = useSignInMutation();
+  // const [googleSignIn] = useGoogleSignInMutation();
+  // console.log("login")
+  // // const handleSubmit = async () => {
+  //   try {
+  //     // const provider = new GoogleAuthProvider();
+  //     // const { user } = await signInWithPopup(auth, provider);
+  //     // const res = await googleSignIn({
+  //     //   name: user.displayName,
+  //     //   email: user.email,
+  //     //   photo: user.photoURL,
+  //     //   gender,
+  //     //   dob: date,
+  //     //   _id: user.uid,
+  //     // });
 
-  const handleSubmit = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const { user } = await signInWithPopup(auth, provider);
-      const res = await signin({
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        gender,
-        dob: date,
-        _id: user.uid,
-      });
-
-      if ("data" in res) {
-        toast.success(res.data.message);
-        const data = await getUser(user.uid);
-        dispatch(userExist(data?.data));
-        navigate("/dashboard");
-      } else {
-        const error = res.error;
-        const message = error.data.message;
-        toast.error(message);
-        dispatch(userNotExist());
-      }
-    } catch (error) {
-      console.error(error.message);
-      toast.error("Google sign-in failed. Please try again.");
-    }
-  };
+  //     // if ("data" in res) {
+  //     //   toast.success(res.data.message);
+  //     //   const data = await getUser(user.uid);
+  //     //   dispatch(userExist(data?.data));
+  //     //   navigate("/dashboard");
+  //     // } else {
+  //     //   const error = res.error;
+  //     //   const message = error.data.message;
+  //     //   toast.error(message);
+  //     //   dispatch(userNotExist());
+  //     // }
+  //   } catch (error) {
+  //     console.error(error.message);
+  //     toast.error("Google sign-in failed. Please try again.");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-300 px-4">
@@ -90,7 +91,7 @@ const Login = () => {
           {/* Google Login Button */}
           <button
             type="button"
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
             className="w-full flex items-center justify-center gap-2 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 transition"
           >
             <FcGoogle className="h-5 w-5" />

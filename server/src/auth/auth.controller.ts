@@ -5,8 +5,8 @@ import { NewUserDto } from './dto/new-user.dto';
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
-    @Post('register')
+    @Post('google-login')
     async registerUser(@Body() newUserDto: NewUserDto) {
-        return this.authService.createUser(newUserDto);
+        return this.authService.loginOrRegisterUser(newUserDto);
     }
 }
